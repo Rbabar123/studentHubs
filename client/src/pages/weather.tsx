@@ -1,14 +1,10 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
 import { ArrowLeft, Search, Sun, Cloud, CloudRain, CloudSnow } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { isUnauthorizedError } from "@/lib/authUtils";
 
 interface WeatherData {
   main: {
@@ -43,43 +39,22 @@ interface ForecastData {
 }
 
 export default function Weather() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [city, setCity] = useState("New York");
   const [searchCity, setSearchCity] = useState("");
 
-  // Redirect to home if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
-
   const { data: weatherData, isLoading: weatherLoading, error: weatherError } = useQuery<WeatherData>({
     queryKey: ["/api/weather", city],
-    enabled: !!city && isAuthenticated,
+    enabled: !!city,
   });
 
   const { data: forecastData } = useQuery<ForecastData>({
     queryKey: ["/api/weather", city, "forecast"],
-    enabled: !!city && isAuthenticated,
+    enabled: !!city,
   });
 
-  const handleLogout = () => {
-    window.location.href = "/api/logout";
-  };
-
   const backToDashboard = () => {
-    setLocation("/");
+    setLocation("/dashboard");
   };
 
   const handleSearch = () => {
@@ -126,13 +101,7 @@ export default function Weather() {
     return Array.from(dailyData.values()).slice(0, 5);
   };
 
-  if (isLoading) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
-  }
 
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -150,14 +119,7 @@ export default function Weather() {
               </Button>
               <h1 className="text-2xl font-bold text-gray-900">Weather</h1>
             </div>
-            <Button 
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700"
-            >
-              Logout
-            </Button>
+
           </div>
         </div>
       </header>

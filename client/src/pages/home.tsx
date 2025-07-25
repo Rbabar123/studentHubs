@@ -1,18 +1,34 @@
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { MapPin, CloudSun, Music } from "lucide-react";
+import { MapPin, CloudSun, Music, ArrowLeft } from "lucide-react";
 
 export default function Home() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const [schoolType, setSchoolType] = useState<string>("");
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
 
-  const handleLogout = () => {
-    window.location.href = "/api/logout";
-  };
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const school = urlParams.get('school') || '';
+    setSchoolType(school);
+
+    // Request user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
+    }
+  }, []);
 
   const navigateToMaps = () => {
     setLocation("/maps");
@@ -26,6 +42,12 @@ export default function Home() {
     setLocation("/spotify");
   };
 
+  const backToLanding = () => {
+    setLocation("/");
+  };
+
+  const isGistCogeo = schoolType === 'gist-cogeo';
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation Header */}
@@ -33,22 +55,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={backToLanding}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
               <h1 className="text-2xl font-bold text-gray-900">Student Hub</h1>
               <span className="text-sm text-gray-500">Dashboard</span>
             </div>
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                {(user as any)?.firstName ? `${(user as any).firstName} ${(user as any).lastName || ''}`.trim() : (user as any)?.email || 'User'}
+                {isGistCogeo ? "GIST Cogeo Student" : "Student"}
               </span>
-              <Button 
-                onClick={handleLogout}
-                variant="ghost"
-                size="sm"
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700"
-              >
-                Logout
-              </Button>
             </div>
           </div>
         </div>
@@ -58,8 +80,25 @@ export default function Home() {
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back!</h2>
-          <p className="text-gray-600">Choose from your favorite tools and services below.</p>
+          {isGistCogeo ? (
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome, GIST Cogeo Student! 🎓</h2>
+              <p className="text-gray-600">Kumusta ka? We're glad to have you here! Access all your tools below.</p>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                <p className="text-green-800 text-sm font-medium">
+                  Special greetings to our GIST Cogeo family! 🌟
+                </p>
+                <p className="text-green-700 text-sm mt-1">
+                  Enjoy full access to all features - Maps, Weather, and Music!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome, Student!</h2>
+              <p className="text-gray-600">Access maps and weather information for your location.</p>
+            </div>
+          )}
         </div>
 
         {/* Quick Access Grid */}
@@ -77,7 +116,10 @@ export default function Home() {
                 <h3 className="text-xl font-semibold text-gray-900 ml-4">Google Maps</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                Explore locations, get directions, and find places of interest around your campus and city.
+                {userLocation 
+                  ? "Explore your current location and find places nearby."
+                  : "Explore locations, get directions, and find places of interest."
+                }
               </p>
               <div className="flex items-center text-primary font-medium">
                 <span>Open Maps</span>
@@ -99,7 +141,7 @@ export default function Home() {
                 <h3 className="text-xl font-semibold text-gray-900 ml-4">Weather</h3>
               </div>
               <p className="text-gray-600 mb-4">
-                Check current weather conditions and forecasts to plan your day and outdoor activities.
+                Check current weather conditions and forecasts for your area.
               </p>
               <div className="flex items-center text-primary font-medium">
                 <span>Check Weather</span>
@@ -108,49 +150,68 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Spotify Card */}
-          <Card 
-            className="shadow-lg hover:shadow-xl transition-shadow cursor-pointer border border-gray-100"
-            onClick={navigateToSpotify}
-          >
-            <CardContent className="p-6">
-              <div className="flex items-center mb-4">
-                <div className="bg-purple-100 p-3 rounded-lg">
-                  <Music className="h-6 w-6 text-purple-600" />
+          {/* Spotify Card - Only for GIST Cogeo */}
+          {isGistCogeo && (
+            <Card 
+              className="shadow-lg hover:shadow-xl transition-shadow cursor-pointer border border-gray-100"
+              onClick={navigateToSpotify}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="bg-purple-100 p-3 rounded-lg">
+                    <Music className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 ml-4">Spotify</h3>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 ml-4">Spotify</h3>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Listen to your favorite music, discover new tracks, and stay focused while studying.
+                <p className="text-gray-600 mb-4">
+                  Listen to your favorite music, discover new tracks, and stay focused while studying.
+                </p>
+                <div className="flex items-center text-primary font-medium">
+                  <span>Open Music</span>
+                  <span className="ml-2">→</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Location Info */}
+        {userLocation && (
+          <Card className="shadow-lg border border-gray-100 mb-8">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Your Location</h3>
+              <p className="text-gray-600">
+                📍 Latitude: {userLocation.lat.toFixed(6)}, Longitude: {userLocation.lng.toFixed(6)}
               </p>
-              <div className="flex items-center text-primary font-medium">
-                <span>Open Music</span>
-                <span className="ml-2">→</span>
+              <p className="text-sm text-gray-500 mt-2">
+                Location access granted - maps will show your current area
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Stats Section - Only for GIST Cogeo */}
+        {isGistCogeo && (
+          <Card className="shadow-lg border border-gray-100">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Stats</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">-</div>
+                  <div className="text-sm text-gray-600">Maps Viewed</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">-</div>
+                  <div className="text-sm text-gray-600">Weather Checks</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">-</div>
+                  <div className="text-sm text-gray-600">Songs Played</div>
+                </div>
               </div>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Recent Activity Section */}
-        <Card className="shadow-lg border border-gray-100">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Stats</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">-</div>
-                <div className="text-sm text-gray-600">Maps Viewed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">-</div>
-                <div className="text-sm text-gray-600">Weather Checks</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">-</div>
-                <div className="text-sm text-gray-600">Songs Played</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        )}
       </main>
     </div>
   );

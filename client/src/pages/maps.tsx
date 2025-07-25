@@ -1,48 +1,34 @@
-import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
 import { ArrowLeft, Search } from "lucide-react";
-import { isUnauthorizedError } from "@/lib/authUtils";
 
 export default function Maps() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
 
-  // Redirect to home if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
+    // Request user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+        }
+      );
     }
-  }, [isAuthenticated, isLoading, toast]);
-
-  const handleLogout = () => {
-    window.location.href = "/api/logout";
-  };
+  }, []);
 
   const backToDashboard = () => {
-    setLocation("/");
+    setLocation("/dashboard");
   };
-
-  if (isLoading) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -60,14 +46,7 @@ export default function Maps() {
               </Button>
               <h1 className="text-2xl font-bold text-gray-900">Maps</h1>
             </div>
-            <Button 
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700"
-            >
-              Logout
-            </Button>
+
           </div>
         </div>
       </header>
@@ -92,7 +71,10 @@ export default function Maps() {
           {/* Google Maps Embed */}
           <div className="h-96">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387191.33750346623!2d-73.97968099999999!3d40.6971494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1640995200000!5m2!1sen!2sus"
+              src={userLocation 
+                ? `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10000!2d${userLocation.lng}!3d${userLocation.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM!5e0!3m2!1sen!2sus!4v1640995200000!5m2!1sen!2sus`
+                : "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387191.33750346623!2d-73.97968099999999!3d40.6971494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1640995200000!5m2!1sen!2sus"
+              }
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -102,6 +84,17 @@ export default function Maps() {
               title="Google Maps"
             />
           </div>
+          
+          {userLocation && (
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-800 text-sm font-medium">
+                📍 Your current location is being displayed on the map
+              </p>
+              <p className="text-blue-700 text-xs mt-1">
+                Lat: {userLocation.lat.toFixed(6)}, Lng: {userLocation.lng.toFixed(6)}
+              </p>
+            </div>
+          )}
         </Card>
       </main>
     </div>

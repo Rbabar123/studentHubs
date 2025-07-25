@@ -1,9 +1,28 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useLocation } from "wouter";
 
 export default function Landing() {
-  const handleLogin = () => {
-    window.location.href = "/api/login";
+  const [school, setSchool] = useState("");
+  const [, setLocation] = useLocation();
+
+  const handleSubmit = () => {
+    if (school.trim()) {
+      const isGistCogeo = school.toLowerCase().includes("gist") && school.toLowerCase().includes("cogeo");
+      if (isGistCogeo) {
+        setLocation("/dashboard?school=gist-cogeo");
+      } else {
+        setLocation("/dashboard?school=other");
+      }
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
   };
 
   return (
@@ -20,9 +39,6 @@ export default function Landing() {
             
             <div className="space-y-6">
               <div className="text-center space-y-3">
-                <p className="text-gray-600">
-                  Access your personalized dashboard with Google Maps, weather information, and music streaming.
-                </p>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-blue-800 text-sm font-medium">
                     "Let's enjoy these weekend habang wala pang pasok! 🌟"
@@ -31,14 +47,28 @@ export default function Landing() {
                     "Dahil umuulan ngayon, wag kakalimutang mag-ingat! Stay safe and productive! ☔"
                   </p>
                 </div>
+                <p className="text-gray-600 mt-4">
+                  Please tell us which school you're from to get started:
+                </p>
               </div>
               
-              <Button 
-                onClick={handleLogin}
-                className="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-              >
-                Sign In
-              </Button>
+              <div className="space-y-4">
+                <Input
+                  type="text"
+                  placeholder="Enter your school name..."
+                  value={school}
+                  onChange={(e) => setSchool(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="w-full"
+                />
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={!school.trim()}
+                  className="w-full bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Continue
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

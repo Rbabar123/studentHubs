@@ -1,50 +1,43 @@
-import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { ArrowLeft, Play, SkipBack, SkipForward, Pause } from "lucide-react";
-import { isUnauthorizedError } from "@/lib/authUtils";
+import { ArrowLeft, Play, SkipBack, SkipForward } from "lucide-react";
 
 export default function Spotify() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [schoolType, setSchoolType] = useState<string>("");
 
-  // Redirect to home if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const school = urlParams.get('school') || '';
+    setSchoolType(school);
+    
+    // If not GIST Cogeo, redirect back to dashboard
+    if (school !== 'gist-cogeo') {
+      setLocation("/dashboard");
     }
-  }, [isAuthenticated, isLoading, toast]);
-
-  const handleLogout = () => {
-    window.location.href = "/api/logout";
-  };
+  }, [setLocation]);
 
   const backToDashboard = () => {
-    setLocation("/");
+    setLocation("/dashboard");
   };
 
   const connectSpotify = () => {
     window.open('https://open.spotify.com', '_blank');
   };
 
-  if (isLoading) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return null;
+  // Only GIST Cogeo students can access this page
+  if (schoolType !== 'gist-cogeo') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Restricted</h2>
+          <p className="text-gray-600 mb-4">This feature is only available for GIST Cogeo students.</p>
+          <Button onClick={backToDashboard}>Back to Dashboard</Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -63,14 +56,7 @@ export default function Spotify() {
               </Button>
               <h1 className="text-2xl font-bold text-gray-900">Music Player</h1>
             </div>
-            <Button 
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700"
-            >
-              Logout
-            </Button>
+
           </div>
         </div>
       </header>

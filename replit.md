@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack web application called "Student Hub" that provides a personal dashboard for students with integrated productivity tools. The application features Google Maps integration, weather information, and music streaming capabilities, all behind a secure authentication system.
+This is a full-stack web application called "Student Hub" that provides a personalized dashboard for students with integrated productivity tools. The application features school-based access control, Google Maps integration with geolocation, weather information, and music streaming capabilities. GIST Cogeo students receive full access to all features, while students from other schools have access to Maps and Weather only.
 
 ## User Preferences
 
@@ -32,11 +32,11 @@ Preferred communication style: Simple, everyday language.
 
 ## Key Components
 
-### Authentication System
-- **Provider**: Replit Auth (OpenID Connect)
-- **Session Storage**: PostgreSQL-backed sessions using connect-pg-simple
-- **User Management**: Automatic user creation/updates on login
-- **Security**: HTTP-only cookies with secure settings
+### Access Control System
+- **School-Based Access**: Users identify their school on entry
+- **GIST Cogeo Privileges**: Full access to Maps, Weather, and Spotify features
+- **Other Schools**: Limited access to Maps and Weather only
+- **No Authentication**: Simplified access without login requirements
 
 ### UI Components
 - **Component Library**: Radix UI primitives with shadcn/ui styling
@@ -50,11 +50,11 @@ Preferred communication style: Simple, everyday language.
 - **Music**: Spotify web integration (opens external player)
 
 ### Pages Structure
-- **Landing Page**: Unauthenticated users see login prompt
-- **Dashboard**: Main hub with navigation to all features
-- **Maps Page**: Google Maps integration interface
-- **Weather Page**: City-based weather lookup with current conditions
-- **Spotify Page**: Music streaming interface
+- **Landing Page**: School selection interface with Filipino welcome messages
+- **Dashboard**: Personalized hub based on school type with feature access
+- **Maps Page**: Google Maps integration with user location detection
+- **Weather Page**: City-based weather lookup with current conditions and forecasts
+- **Spotify Page**: Music streaming interface (GIST Cogeo students only)
 
 ## Data Flow
 

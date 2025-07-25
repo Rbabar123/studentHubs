@@ -20,7 +20,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Weather API route
-  app.get('/api/weather/:city', isAuthenticated, async (req, res) => {
+  app.get('/api/weather/:city', async (req, res) => {
     try {
       const { city } = req.params;
       const apiKey = process.env.OPENWEATHER_API_KEY || process.env.WEATHER_API_KEY;
@@ -49,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Weather forecast API route
-  app.get('/api/weather/:city/forecast', isAuthenticated, async (req, res) => {
+  app.get('/api/weather/:city/forecast', async (req, res) => {
     try {
       const { city } = req.params;
       const apiKey = process.env.OPENWEATHER_API_KEY || process.env.WEATHER_API_KEY;
