@@ -10,8 +10,7 @@
 Before deploying, you'll need to set up these environment variables in your Vercel project:
 
 ### Required Environment Variables:
-- `DATABASE_URL` - Your PostgreSQL database connection string
-- `OPENWEATHER_API_KEY` - Your OpenWeather API key
+- `WEATHER_API_KEY` - Your Weather API key from weatherapi.com
 
 ### Optional Environment Variables (for Replit Auth, if you want to re-enable it later):
 - `SESSION_SECRET` - A secure random string for session encryption
@@ -41,13 +40,9 @@ git push origin main
 
 ### 4. Set Environment Variables
 1. In your Vercel project dashboard, go to "Settings" → "Environment Variables"
-2. Add each required environment variable:
-   - Variable Name: `DATABASE_URL`
-   - Value: Your PostgreSQL connection string
-   - Environment: Production, Preview, Development
-   
-   - Variable Name: `OPENWEATHER_API_KEY`
-   - Value: Your OpenWeather API key
+2. Add the required environment variable:
+   - Variable Name: `WEATHER_API_KEY`
+   - Value: `1c6b387f6d5542f5b2c41407252507`
    - Environment: Production, Preview, Development
 
 ### 5. Deploy
@@ -55,18 +50,9 @@ git push origin main
 2. Wait for the build and deployment to complete
 3. Your app will be available at: `https://your-project-name.vercel.app`
 
-## Database Setup
+## Weather API Setup
 
-### Option 1: Use Neon (Recommended)
-1. Sign up at https://neon.tech
-2. Create a new project
-3. Copy the connection string
-4. Add it as `DATABASE_URL` in Vercel environment variables
-
-### Option 2: Use Vercel Postgres
-1. In your Vercel project, go to "Storage"
-2. Create a new Postgres database
-3. The `DATABASE_URL` will be automatically added to your environment variables
+Your Weather API key from weatherapi.com is already included in the code. The weather functionality will work immediately after deployment.
 
 ## Post-Deployment
 
@@ -86,9 +72,8 @@ npx drizzle-kit push
 ### Common Issues:
 
 1. **Build Fails**: Check build logs in Vercel dashboard
-2. **Database Connection**: Verify `DATABASE_URL` is correct
-3. **Weather Not Working**: Confirm `OPENWEATHER_API_KEY` is set
-4. **404 on API Routes**: Check that `vercel.json` is in the root directory
+2. **Weather Not Working**: Confirm `WEATHER_API_KEY` is set to your weatherapi.com key
+3. **404 on API Routes**: Check that `vercel.json` is in the root directory
 
 ### Debug Steps:
 1. Check Vercel function logs in the dashboard
