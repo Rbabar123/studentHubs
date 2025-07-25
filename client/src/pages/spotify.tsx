@@ -24,7 +24,7 @@ export default function Spotify() {
   };
 
   const connectSpotify = () => {
-    window.open('https://open.spotify.com', '_blank');
+    window.open('https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd', '_blank');
   };
 
   // Only GIST Cogeo students can access this page
@@ -66,30 +66,58 @@ export default function Spotify() {
         <Card className="shadow-lg p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Spotify Player</h2>
           
-          {/* Spotify Web Player Embed */}
-          <div className="bg-gray-100 rounded-lg p-8 text-center mb-6">
-            <div className="text-6xl mb-4">🎵</div>
-            <p className="text-gray-600 mb-2">Spotify Web Player</p>
-            <p className="text-sm text-gray-500 mb-4">Connect to your Spotify account to start listening</p>
-            <Button 
-              onClick={connectSpotify}
-              className="bg-green-500 text-white hover:bg-green-600"
-            >
-              🎵 Connect to Spotify
-            </Button>
-          </div>
-          
           {/* Embedded Spotify Player */}
-          <div className="rounded-lg overflow-hidden">
-            <iframe 
-              src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd" 
-              width="100%" 
-              height="352" 
-              frameBorder="0" 
-              allowTransparency={true} 
-              allow="encrypted-media"
-              title="Spotify Player"
-            />
+          <div className="space-y-6">
+            {/* Study Playlist */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Study & Focus Playlist</h3>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <iframe 
+                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd" 
+                  width="100%" 
+                  height="352" 
+                  frameBorder="0" 
+                  allowTransparency={true} 
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  title="Study & Focus Playlist"
+                />
+              </div>
+            </div>
+
+            {/* Chill Hip-Hop Playlist */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Chill Hip-Hop Beats</h3>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <iframe 
+                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn" 
+                  width="100%" 
+                  height="352" 
+                  frameBorder="0" 
+                  allowTransparency={true} 
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  title="Chill Hip-Hop Beats"
+                />
+              </div>
+            </div>
+
+            {/* Acoustic Study Playlist */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Acoustic Study Session</h3>
+              <div className="rounded-lg overflow-hidden shadow-md">
+                <iframe 
+                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ" 
+                  width="100%" 
+                  height="152" 
+                  frameBorder="0" 
+                  allowTransparency={true} 
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  title="Acoustic Study Session"
+                />
+              </div>
+            </div>
           </div>
         </Card>
 

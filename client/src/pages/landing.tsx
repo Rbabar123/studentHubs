@@ -56,9 +56,6 @@ export default function Landing() {
                 <p className="text-gray-600 mt-4">
                   Please tell us which school you're from to get started:
                 </p>
-                <p className="text-xs text-gray-500 mt-2">
-                  Examples: "GIST", "GIST Cogeo", "Golden International School", or any other school name
-                </p>
               </div>
               
               <div className="space-y-4">
