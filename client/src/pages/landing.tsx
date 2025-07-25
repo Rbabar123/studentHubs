@@ -10,7 +10,13 @@ export default function Landing() {
 
   const handleSubmit = () => {
     if (school.trim()) {
-      const isGistCogeo = school.toLowerCase().includes("gist") && school.toLowerCase().includes("cogeo");
+      const schoolLower = school.toLowerCase().trim();
+      const isGistCogeo = schoolLower.includes("gist") || 
+                          schoolLower.includes("golden") ||
+                          schoolLower === "gist cogeo" ||
+                          schoolLower === "gistcogeo" ||
+                          schoolLower.includes("golden international school");
+      
       if (isGistCogeo) {
         setLocation("/dashboard?school=gist-cogeo");
       } else {
@@ -49,6 +55,9 @@ export default function Landing() {
                 </div>
                 <p className="text-gray-600 mt-4">
                   Please tell us which school you're from to get started:
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Examples: "GIST", "GIST Cogeo", "Golden International School", or any other school name
                 </p>
               </div>
               
