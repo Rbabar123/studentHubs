@@ -34,10 +34,10 @@ git push origin main
 4. Select your repository from the list
 
 ### 3. Configure Project Settings
-1. **Framework Preset**: Select "Other"
-2. **Build Command**: `npm run build`
-3. **Output Directory**: `dist/public`
-4. **Install Command**: `npm install`
+1. **Framework Preset**: Select "Vite"
+2. **Build Command**: `npm run build` (should auto-detect)
+3. **Output Directory**: `dist/public` (should auto-detect)
+4. **Install Command**: `npm install` (should auto-detect)
 
 ### 4. Set Environment Variables
 1. In your Vercel project dashboard, go to "Settings" → "Environment Variables"

@@ -44,12 +44,26 @@ export default function Weather() {
   const [searchCity, setSearchCity] = useState("");
 
   const { data: weatherData, isLoading: weatherLoading, error: weatherError } = useQuery<WeatherData>({
-    queryKey: ["/api/weather", city],
+    queryKey: ["/api/index", city],
+    queryFn: async () => {
+      const response = await fetch(`/api/index?city=${encodeURIComponent(city)}&type=current`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch weather data');
+      }
+      return response.json();
+    },
     enabled: !!city,
   });
 
   const { data: forecastData } = useQuery<ForecastData>({
-    queryKey: ["/api/weather", city, "forecast"],
+    queryKey: ["/api/index", city, "forecast"],
+    queryFn: async () => {
+      const response = await fetch(`/api/index?city=${encodeURIComponent(city)}&type=forecast`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch forecast data');
+      }
+      return response.json();
+    },
     enabled: !!city,
   });
 
