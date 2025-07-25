@@ -64,12 +64,12 @@ export default function Weather() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  const { data: weatherData, isLoading: weatherLoading, error: weatherError } = useQuery({
+  const { data: weatherData, isLoading: weatherLoading, error: weatherError } = useQuery<WeatherData>({
     queryKey: ["/api/weather", city],
     enabled: !!city && isAuthenticated,
   });
 
-  const { data: forecastData } = useQuery({
+  const { data: forecastData } = useQuery<ForecastData>({
     queryKey: ["/api/weather", city, "forecast"],
     enabled: !!city && isAuthenticated,
   });
@@ -248,7 +248,7 @@ export default function Weather() {
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">5-Day Forecast</h3>
                 <div className="space-y-4">
-                  {forecastData && processForecast(forecastData).map((day: any, index: number) => (
+                  {forecastData && processForecast(forecastData).map((day, index: number) => (
                     <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
                       <div className="flex items-center space-x-3">
                         {getWeatherIcon(day.weather.main)}

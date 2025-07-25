@@ -39,7 +39,7 @@ export default function Home() {
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email || 'User'}
+                {(user as any)?.firstName ? `${(user as any).firstName} ${(user as any).lastName || ''}`.trim() : (user as any)?.email || 'User'}
               </span>
               <Button 
                 onClick={handleLogout}

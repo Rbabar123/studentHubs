@@ -19,9 +19,19 @@ export default function Landing() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Welcome</h2>
             
             <div className="space-y-6">
-              <p className="text-gray-600 text-center">
-                Access your personalized dashboard with Google Maps, weather information, and music streaming.
-              </p>
+              <div className="text-center space-y-3">
+                <p className="text-gray-600">
+                  Access your personalized dashboard with Google Maps, weather information, and music streaming.
+                </p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-blue-800 text-sm font-medium">
+                    "Let's enjoy these weekend habang wala pang pasok! 🌟"
+                  </p>
+                  <p className="text-blue-700 text-sm mt-1">
+                    "Dahil umuulan ngayon, wag kakalimutang mag-ingat! Stay safe and productive! ☔"
+                  </p>
+                </div>
+              </div>
               
               <Button 
                 onClick={handleLogin}
